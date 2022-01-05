@@ -13,10 +13,10 @@ class CamtParser(models.AbstractModel):
     _name = "account.statement.import.camt.parser"
     _description = "Account Bank Statement Import CAMT parser"
 
-    def parse_amount(self, ns, node):
+    def parse_amount(self, ns, node, currency=None):
         """Parse element that contains Amount and CreditDebitIndicator."""
         if node is None:
-            return 0.0
+            return (None, None, None)
         sign = 1
         amount = 0.0
         sign_node = node.xpath("ns:CdtDbtInd", namespaces={"ns": ns})
@@ -24,14 +24,41 @@ class CamtParser(models.AbstractModel):
             sign_node = node.xpath("../../ns:CdtDbtInd", namespaces={"ns": ns})
         if sign_node and sign_node[0].text == "DBIT":
             sign = -1
+
         amount_node = node.xpath("ns:Amt", namespaces={"ns": ns})
-        if not amount_node:
+        if not amount_node or currency is not None and amount_node[0].xpath("./@Ccy", namespaces={"ns": ns})[0] != currency:
+            amount_node = node.xpath(
+                "./ns:AmtDtls/ns:CntrValAmt/ns:Amt", namespaces={"ns": ns}
+            )
+        if not amount_node or currency is not None and amount_node[0].xpath("./@Ccy", namespaces={"ns": ns})[0] != currency:
             amount_node = node.xpath(
                 "./ns:AmtDtls/ns:TxAmt/ns:Amt", namespaces={"ns": ns}
             )
-        if amount_node:
-            amount = sign * float(amount_node[0].text)
-        return amount
+        if not amount_node or currency is not None and amount_node[0].xpath("./@Ccy", namespaces={"ns": ns})[0] != currency:
+            return (None, None, None)  # could not find any amount in the bank account currency
+        amount = sign * float(amount_node[0].text)
+
+        if currency is None:
+            return (amount, None, None)
+
+        currency_exchange_node = node.xpath(
+            "./ns:AmtDtls/ns:CntrValAmt/ns:CcyXchg", namespaces={"ns": ns}
+        )
+        if not currency_exchange_node:
+            return (amount, None, None)
+
+        foreign_currency = currency_exchange_node[0].xpath(
+            "./ns:SrcCcy", namespaces={"ns": ns}
+        )[0].text
+        parsed_foreign_currency = self.env['res.currency'].search([['name', 'ilike', foreign_currency]])[0].id or None
+        foreign_amount_node = node.xpath(
+            "./ns:AmtDtls/ns:TxAmt/ns:Amt", namespaces={"ns": ns}
+        )
+        if not foreign_amount_node:
+            return (amount, None, None)
+        amount_currency = sign * float(foreign_amount_node[0].text)
+
+        return (amount, amount_currency, parsed_foreign_currency)
 
     def add_value_from_node(self, ns, node, xpath_str, obj, attr_name, join_str=None):
         """Add value to object from first or all nodes found with xpath.
@@ -53,7 +80,7 @@ class CamtParser(models.AbstractModel):
                 obj[attr_name] = attr_value
                 break
 
-    def parse_transaction_details(self, ns, node, transaction):
+    def parse_transaction_details(self, ns, node, transaction, currency):
         """Parse TxDtls node."""
         # message
         self.add_value_from_node(
@@ -84,9 +111,14 @@ class CamtParser(models.AbstractModel):
             transaction,
             "ref",
         )
-        amount = self.parse_amount(ns, node)
-        if amount != 0.0:
+        amount, amount_currency, foreign_currency = self.parse_amount(ns, node, currency)
+        if amount != 0.0 and amount != None:
             transaction["amount"] = amount
+
+        if amount_currency != 0.0 and amount_currency != None and foreign_currency != None:
+           transaction["amount_currency"] = amount_currency
+           transaction["foreign_currency_id"] = foreign_currency
+
         # remote party values
         party_type = "Dbtr"
         party_type_node = node.xpath("../../ns:CdtDbtInd", namespaces={"ns": ns})
@@ -128,13 +160,19 @@ class CamtParser(models.AbstractModel):
                     "account_number",
                 )
 
-    def parse_entry(self, ns, node):
+    def parse_entry(self, ns, node, currency):
         """Parse an Ntry node and yield transactions"""
         transaction = {"payment_ref": "/", "amount": 0}  # fallback defaults
         self.add_value_from_node(ns, node, "./ns:BookgDt/ns:Dt", transaction, "date")
-        amount = self.parse_amount(ns, node)
-        if amount != 0.0:
+
+        amount, amount_currency, foreign_currency = self.parse_amount(ns, node, currency)
+        if amount != 0.0 and amount != None:
             transaction["amount"] = amount
+
+        if amount_currency != 0.0 and amount_currency != None and foreign_currency != None:
+           transaction["amount_currency"] = amount_currency
+           transaction["foreign_currency_id"] = foreign_currency
+
         self.add_value_from_node(
             ns, node, "./ns:AddtlNtryInf", transaction, "narration"
         )
@@ -157,7 +195,7 @@ class CamtParser(models.AbstractModel):
         transaction_base = transaction
         for node in details_nodes:
             transaction = transaction_base.copy()
-            self.parse_transaction_details(ns, node, transaction)
+            self.parse_transaction_details(ns, node, transaction, currency)
             yield transaction
 
     def get_balance_amounts(self, ns, node):
@@ -188,8 +226,8 @@ class CamtParser(models.AbstractModel):
                     if not end_balance_node:
                         end_balance_node = balance_node[-1]
         return (
-            self.parse_amount(ns, start_balance_node),
-            self.parse_amount(ns, end_balance_node),
+            self.parse_amount(ns, start_balance_node)[0],
+            self.parse_amount(ns, end_balance_node)[0],
         )
 
     def parse_statement(self, ns, node):
@@ -212,7 +250,7 @@ class CamtParser(models.AbstractModel):
         entry_nodes = node.xpath("./ns:Ntry", namespaces={"ns": ns})
         transactions = []
         for entry_node in entry_nodes:
-            transactions.extend(self.parse_entry(ns, entry_node))
+            transactions.extend(self.parse_entry(ns, entry_node, result["currency"]))
         result["transactions"] = transactions
         result["date"] = None
         if transactions:
