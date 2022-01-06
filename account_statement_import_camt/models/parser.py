@@ -68,16 +68,39 @@ class CamtParser(models.AbstractModel):
             "payment_ref",
             join_str="\n",
         )
-        # name
         self.add_value_from_node(
-            ns, node, ["./ns:AddtlTxInf"], transaction, "payment_ref", join_str="\n"
+            ns, node, ["./ns:RmtInf/ns:Ustrd"], transaction["narration"], "Unstructured Reference", join_str="\n"
         )
+        self.add_value_from_node(
+            ns, node, ["./ns:RmtInf/ns:Strd/ns:CdtrRefInf/ns:Ref"], transaction["narration"], "Structured Reference", join_str="\n"
+        )
+        self.add_value_from_node(
+            ns, node, ["./ns:AddtlTxInf"], transaction["narration"], "AddtlTxInf", join_str="\n"
+        )
+        self.add_value_from_node(
+            ns, node, ["./ns:RtrInf/ns:Rsn/ns:Cd"], transaction["narration"], "Return Rsn"
+        )
+        self.add_value_from_node(
+            ns, node, ["./ns:RtrInf/ns:AddtlInf"], transaction["narration"], "Return AddtlInf", join_str=" "
+        )
+        self.add_value_from_node(
+            ns, node, ["./ns:Refs/ns:MsgId"], transaction["narration"], "MsgId",
+        )
+        self.add_value_from_node(
+            ns, node, ["./ns:Refs/ns:AcctSvcrRef"], transaction["narration"], "AcctSvcrRef",
+        )
+        self.add_value_from_node(
+            ns, node, ["./ns:Refs/ns:EndToEndId"], transaction["narration"], "EndToEndId",
+        )
+        self.add_value_from_node(
+            ns, node, ["./ns:Refs/ns:InstrId"], transaction["narration"], "InstrId",
+        )
+
         # eref
         self.add_value_from_node(
             ns,
             node,
             [
-                "./ns:RmtInf/ns:Strd/ns:CdtrRefInf/ns:Ref",
                 "./ns:Refs/ns:EndToEndId",
                 "./ns:Ntry/ns:AcctSvcrRef",
             ],
@@ -130,14 +153,11 @@ class CamtParser(models.AbstractModel):
 
     def parse_entry(self, ns, node):
         """Parse an Ntry node and yield transactions"""
-        transaction = {"payment_ref": "/", "amount": 0}  # fallback defaults
+        transaction = {"payment_ref": "/", "amount": 0, "narration": {}}  # fallback defaults
         self.add_value_from_node(ns, node, "./ns:BookgDt/ns:Dt", transaction, "date")
         amount = self.parse_amount(ns, node)
         if amount != 0.0:
             transaction["amount"] = amount
-        self.add_value_from_node(
-            ns, node, "./ns:AddtlNtryInf", transaction, "narration"
-        )
         self.add_value_from_node(
             ns,
             node,
@@ -150,14 +170,37 @@ class CamtParser(models.AbstractModel):
             "ref",
         )
 
+        # enrich the notes with some more infos when they are available
+        self.add_value_from_node(
+            ns, node, "./ns:AddtlNtryInf", transaction["narration"], "AddtlNtryInf"
+        )
+
+        self.add_value_from_node(
+            ns, node, "./ns:RvslInd", transaction["narration"], "RvslInd"
+        )
+        self.add_value_from_node(
+            ns, node, "./ns:BkTxCd/ns:Domn/ns:Cd", transaction["narration"], "BxCd"
+        )
+        self.add_value_from_node(
+            ns, node, "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:Cd", transaction["narration"], "Bxcdfm"
+        )                
+        self.add_value_from_node(
+            ns, node, "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:SubFmlyCd", transaction["narration"], "BxcdfmSubFmlyCd"
+        )
+        self.add_value_from_node(
+            ns, node, ["./ns:AddtlNtryInf"], transaction["narration"], "AddtlNtryInf",
+        )
+
         details_nodes = node.xpath("./ns:NtryDtls/ns:TxDtls", namespaces={"ns": ns})
         if len(details_nodes) == 0:
+            transaction["narration"] = str(transaction["narration"])
             yield transaction
             return
         transaction_base = transaction
         for node in details_nodes:
             transaction = transaction_base.copy()
             self.parse_transaction_details(ns, node, transaction)
+            transaction["narration"] = str(transaction["narration"])
             yield transaction
 
     def get_balance_amounts(self, ns, node):
