@@ -193,14 +193,14 @@ class CamtParser(models.AbstractModel):
 
         details_nodes = node.xpath("./ns:NtryDtls/ns:TxDtls", namespaces={"ns": ns})
         if len(details_nodes) == 0:
-            transaction["narration"] = str(transaction["narration"])
+            transaction["narration"] = '\n'.join(["%s: %s" % (key, val) for key, val in transaction["narration"]])
             yield transaction
             return
         transaction_base = transaction
         for node in details_nodes:
             transaction = transaction_base.copy()
             self.parse_transaction_details(ns, node, transaction)
-            transaction["narration"] = str(transaction["narration"])
+            transaction["narration"] = '\n'.join(["%s: %s" % (key, val) for key, val in transaction["narration"]])
             yield transaction
 
     def get_balance_amounts(self, ns, node):
