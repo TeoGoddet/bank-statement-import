@@ -87,7 +87,8 @@ class CamtParser(models.AbstractModel):
             ns,
             node,
             [
-                "./ns:RmtInf/ns:Ustrd|./ns:RtrInf/ns:AddtlInf",
+                "./ns:RmtInf/ns:Ustrd",
+                "./ns:RmtInf/ns:Strd/ns:CdtrRefInf/ns:Ref",
                 "./ns:AddtlNtryInf",
                 "./ns:Refs/ns:InstrId",
             ],
@@ -201,9 +202,7 @@ class CamtParser(models.AbstractModel):
             ns,
             node,
             [
-                "./ns:NtryDtls/ns:RmtInf/ns:Strd/ns:CdtrRefInf/ns:Ref",
-                "./ns:NtryDtls/ns:Btch/ns:PmtInfId",
-                "./ns:NtryDtls/ns:TxDtls/ns:Refs/ns:AcctSvcrRef",
+                "./AcctSvcrRef"
             ],
             transaction,
             "ref",
