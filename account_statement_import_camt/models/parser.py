@@ -195,12 +195,12 @@ class CamtParser(models.AbstractModel):
     def generate_narration(self, transaction):
         # this block ensure compatibility with v13
         transaction["narration"] = {
-            "%s (RltdPties/Nm)" % _("Partner Name"): transaction.get("partner_name", "").strip(),
-            "%s (RltdPties/Acct)" % _("Partner Account Number"): transaction.get("partner_name", "").strip(),
-            "%s (BookgDt)" % _("Transaction Date"): transaction.get("date", "").strip(),
-            _("Reference"): transaction.get("ref", "").strip(),
-            _("Communication"): transaction.get("name", "").strip(),
-            "%s (BkTxCd)" % _("Transaction Type"): transaction.get("transaction_type", "").strip(),
+            "%s (RltdPties/Nm)" % _("Partner Name"): transaction.get("partner_name", ""),
+            "%s (RltdPties/Acct)" % _("Partner Account Number"): transaction.get("partner_name", ""),
+            "%s (BookgDt)" % _("Transaction Date"): transaction.get("date", ""),
+            _("Reference"): transaction.get("ref", ""),
+            _("Communication"): transaction.get("name", ""),
+            "%s (BkTxCd)" % _("Transaction Type"): transaction.get("transaction_type", ""),
             **transaction["narration"]
         }
 
