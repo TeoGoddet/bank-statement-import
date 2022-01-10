@@ -78,7 +78,7 @@
                                   'Additional Transaction Information (AddtlTxInf): #RD PARTY MEDIA CUSNO 90782 4210773\n'
                                   'End To End Id (Refs/EndToEndId): 115\n'
                                   'Instructed Id (Refs/InstrId): INNDNL2U20140105000217200000708\n'
-                                  'Postal Address (PstlAdr): SOMESTREET 570-A | 1276 ML HOUSCITY | NL',      
+                                  'Postal Address (PstlAdr): SOMESTREET 570-A | 1276 ML HOUSCITY | NL',
                      'partner_name': '3rd party Media',
                      'payment_ref': '#RD PARTY MEDIA CUSNO 90782 4210773',
                      'ref': '115',
