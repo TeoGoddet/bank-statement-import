@@ -4,7 +4,7 @@ The narration field now contains a lot of information as key: value pairs. See c
     Partner Account Number (RltdPties/Acct): Banque Cantonale Vaudoise
     Transaction Date (BookgDt): 2017-03-22
     Reference: 302388292000022222222222222
-    Communication:
+    Communication: 
     Transaction Type (BkTxCd): PMNT-RCDT-VCOM
     Additional Entry Information (AddtlNtryInf): CRÉDIT GROUPÉ BVR TRAITEMENT DU 22.03.2017 NUMÉRO CLIENT 01-70884-3 PAQUET ID: 123456CHCAFEBABE
     Reversal Indicator (RvslInd): false
