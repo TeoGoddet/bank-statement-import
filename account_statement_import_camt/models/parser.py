@@ -70,99 +70,56 @@ class CamtParser(models.AbstractModel):
         )
 
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:RmtInf/ns:Ustrd"],
-            transaction["narration"],
-            "%s (RmtInf/Ustrd)" % _("Unstructured Reference"),
-            join_str=" ",
+            ns, node, ["./ns:RmtInf/ns:Ustrd"], transaction["narration"], 
+            "%s (RmtInf/Ustrd)" % _("Unstructured Reference"), join_str=" "  
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:RmtInf/ns:Strd/ns:CdtrRefInf/ns:Ref"],
-            transaction["narration"],
-            "%s (RmtInf/Strd/CdtrRefInf/Ref)" % _("Structured Reference"),
-            join_str=" ",
+            ns, node, ["./ns:RmtInf/ns:Strd/ns:CdtrRefInf/ns:Ref"], transaction["narration"], 
+            "%s (RmtInf/Strd/CdtrRefInf/Ref)" % _("Structured Reference"), join_str=" "
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:AddtlTxInf"],
-            transaction["narration"],
-            "%s (AddtlTxInf)" % _("Additional Transaction Information"),
-            join_str=" ",
+            ns, node, ["./ns:AddtlTxInf"], transaction["narration"],
+            "%s (AddtlTxInf)" % _("Additional Transaction Information"), join_str=" "
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:RtrInf/ns:Rsn/ns:Cd"],
-            transaction["narration"],
-            "%s (RtrInf/Rsn/Cd)" % _("Return Reason Code"),
+            ns, node, ["./ns:RtrInf/ns:Rsn/ns:Cd"], transaction["narration"],
+            "%s (RtrInf/Rsn/Cd)" % _("Return Reason Code")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:RtrInf/ns:Rsn/ns:Cd"],
-            transaction["narration"],
-            "%s (RtrInf/Rsn/Prtry)" % _("Return Reason Code (Proprietary)"),
+            ns, node, ["./ns:RtrInf/ns:Rsn/ns:Cd"], transaction["narration"],
+            "%s (RtrInf/Rsn/Prtry)" % _("Return Reason Code (Proprietary)")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:RtrInf/ns:AddtlInf"],
-            transaction["narration"],
-            "%s (RtrInf/AddtlInf)" % _("Return Reason Additional Information"),
-            join_str=" ",
+            ns, node, ["./ns:RtrInf/ns:AddtlInf"], transaction["narration"],
+            "%s (RtrInf/AddtlInf)" % _("Return Reason Additional Information"), join_str=" "
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:Refs/ns:MsgId"],
-            transaction["narration"],
-            "%s (Refs/MsgId)" % _("Msg Id"),
+            ns, node, ["./ns:Refs/ns:MsgId"], transaction["narration"],
+            "%s (Refs/MsgId)" % _("Msg Id")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:Refs/ns:AcctSvcrRef"],
-            transaction["narration"],
-            "%s (Refs/AcctSvcrRef)" % _("Account Servicer Reference"),
+            ns, node, ["./ns:Refs/ns:AcctSvcrRef"], transaction["narration"],
+            "%s (Refs/AcctSvcrRef)" % _("Account Servicer Reference")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:Refs/ns:EndToEndId"],
-            transaction["narration"],
-            "%s (Refs/EndToEndId)" % _("End To End Id"),
+            ns, node, ["./ns:Refs/ns:EndToEndId"], transaction["narration"], 
+            "%s (Refs/EndToEndId)" % _("End To End Id")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:Refs/ns:InstrId"],
-            transaction["narration"],
-            "%s (Refs/InstrId)" % _("Instructed Id"),
+            ns, node, ["./ns:Refs/ns:InstrId"], transaction["narration"],
+            "%s (Refs/InstrId)" % _("Instructed Id")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:Refs/ns:TxId"],
-            transaction["narration"],
-            "%s (Refs/TxId)" % _("Transaction Identification"),
+            ns, node, ["./ns:Refs/ns:TxId"], transaction["narration"],
+            "%s (Refs/TxId)" % _("Transaction Identification")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:Refs/ns:MntId"],
-            transaction["narration"],
-            "%s (Refs/MntId)" % _("Mandate Id"),
+            ns, node, ["./ns:Refs/ns:MntId"], transaction["narration"],
+            "%s (Refs/MntId)" % _("Mandate Id")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            ["./ns:Refs/ns:ChqNb"],
-            transaction["narration"],
-            "%s (Refs/ChqNb)" % _("Cheque Number"),
+            ns, node, ["./ns:Refs/ns:ChqNb"], transaction["narration"],
+            "%s (Refs/ChqNb)" % _("Cheque Number")
         )
 
         self.add_value_from_node(
@@ -179,7 +136,7 @@ class CamtParser(models.AbstractModel):
             ],
             transaction,
             "ref",
-        )
+        )   
         amount = self.parse_amount(ns, node)
         if amount != 0.0:
             transaction["amount"] = amount
@@ -209,8 +166,7 @@ class CamtParser(models.AbstractModel):
                     "partner_name",
                 )
             self.add_value_from_node(
-                ns,
-                party_node[0],
+                ns, party_node[0], 
                 "./ns:PstlAdr/ns:StrtNm|"
                 "./ns:PstlAdr/ns:BldgNb|"
                 "./ns:PstlAdr/ns:BldgNm|"
@@ -222,9 +178,7 @@ class CamtParser(models.AbstractModel):
                 "./ns:PstlAdr/ns:CtrySubDvsn|"
                 "./ns:PstlAdr/ns:Ctry|"
                 "./ns:PstlAdr/ns:AdrLine",
-                transaction["narration"],
-                "%s (PstlAdr)" % _("Postal Address"),
-                join_str=" | ",
+                transaction["narration"], "%s (PstlAdr)" % _("Postal Address"), join_str=" | "
             )
         # Get remote_account from iban or from domestic account:
         account_node = node.xpath(
@@ -246,30 +200,20 @@ class CamtParser(models.AbstractModel):
     def generate_narration(self, transaction):
         # this block ensure compatibility with v13
         transaction["narration"] = {
-            "%s (RltdPties/Nm)"
-            % _("Partner Name"): transaction.get("partner_name", ""),
-            "%s (RltdPties/Acct)"
-            % _("Partner Account Number"): transaction.get("account_number", ""),
+            "%s (RltdPties/Nm)" % _("Partner Name"): transaction.get("partner_name", ""),
+            "%s (RltdPties/Acct)" % _("Partner Account Number"): transaction.get("partner_name", ""),
             "%s (BookgDt)" % _("Transaction Date"): transaction.get("date", ""),
             _("Reference"): transaction.get("ref", ""),
             _("Communication"): transaction.get("name", ""),
-            "%s (BkTxCd)"
-            % _("Transaction Type"): transaction.get("transaction_type", ""),
-            **transaction["narration"],
+            "%s (BkTxCd)" % _("Transaction Type"): transaction.get("transaction_type", ""),
+            **transaction["narration"]
         }
 
-        transaction["narration"] = "\n".join(
-            ["%s: %s" % (key, val) for key, val in transaction["narration"].items()]
-        )
+        transaction["narration"] = '\n'.join(["%s: %s" % (key, val) for key, val in transaction["narration"].items()])
 
     def parse_entry(self, ns, node):
         """Parse an Ntry node and yield transactions"""
-        transaction = {
-            "payment_ref": "/",
-            "amount": 0,
-            "narration": {},
-            "transaction_type": {},
-        }  # fallback defaults
+        transaction = {"payment_ref": "/", "amount": 0, "narration": {}, "transaction_type": {}}  # fallback defaults
         self.add_value_from_node(ns, node, "./ns:BookgDt/ns:Dt", transaction, "date")
         amount = self.parse_amount(ns, node)
         if amount != 0.0:
@@ -288,44 +232,24 @@ class CamtParser(models.AbstractModel):
 
         # enrich the notes with some more infos when they are available
         self.add_value_from_node(
-            ns,
-            node,
-            "./ns:AddtlNtryInf",
-            transaction["narration"],
-            "%s (AddtlNtryInf)" % _("Additional Entry Information"),
+            ns, node, "./ns:AddtlNtryInf", transaction["narration"],
+            "%s (AddtlNtryInf)" % _("Additional Entry Information")
         )
         self.add_value_from_node(
-            ns,
-            node,
-            "./ns:RvslInd",
-            transaction["narration"],
-            "%s (RvslInd)" % _("Reversal Indicator"),
+            ns, node, "./ns:RvslInd", transaction["narration"],
+            "%s (RvslInd)" % _("Reversal Indicator")
         )
 
         self.add_value_from_node(
-            ns,
-            node,
-            "./ns:BkTxCd/ns:Domn/ns:Cd",
-            transaction["transaction_type"],
-            "Code",
+            ns, node, "./ns:BkTxCd/ns:Domn/ns:Cd", transaction["transaction_type"], "Code"
         )
         self.add_value_from_node(
-            ns,
-            node,
-            "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:Cd",
-            transaction["transaction_type"],
-            "FmlyCd",
+            ns, node, "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:Cd", transaction["transaction_type"], "FmlyCd"
         )
         self.add_value_from_node(
-            ns,
-            node,
-            "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:SubFmlyCd",
-            transaction["transaction_type"],
-            "SubFmlyCd",
+            ns, node, "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:SubFmlyCd", transaction["transaction_type"], "SubFmlyCd"
         )
-        transaction["transaction_type"] = (
-            "-".join(transaction["transaction_type"].values()) or ""
-        )
+        transaction["transaction_type"] = "-".join(transaction["transaction_type"].values()) or ""
 
         details_nodes = node.xpath("./ns:NtryDtls/ns:TxDtls", namespaces={"ns": ns})
         if len(details_nodes) == 0:
