@@ -17,7 +17,7 @@
                                   'Additional Transaction Information (AddtlTxInf): MKB Insurance 859239PERIOD 01.01.2014 - 31.12.2014\n'
                                   'End To End Id (Refs/EndToEndId): 435005714488-ABNO33052620\n'
                                   'Instructed Id (Refs/InstrId): INNDNL2U20141231000142300002844\n'
-                                  'Postal Address (PstlAdr): TEST STREET 20  1234 AB TESTCITY  NL',
+                                  'Postal Address (PstlAdr): TEST STREET 20 | 1234 AB TESTCITY | NL',
                      'partner_name': 'INSURANCE COMPANY TESTX',
                      'payment_ref': 'MKB Insurance 859239PERIOD 01.01.2014 - 31.12.2014',
                      'ref': '435005714488-ABNO33052620',
@@ -69,18 +69,17 @@
                     {'account_number': 'NL69ABNA0522123643',
                      'amount': 1405.31,
                      'date': '2014-01-05',
-                      'narration': 'Partner Name (RltdPties/Nm): 3rd party Media\n'
-                                   'Partner Account Number (RltdPties/Acct): 3rd party Media\n'
-                                   'Transaction Date (BookgDt): 2014-01-05\n'
-                                   'Reference: 115\n'
-                                   'Communication: \n'
-                                   'Transaction Type (BkTxCd): PMNT-RCDT-ESCT\n'
-                                   'Additional Transaction Information (AddtlTxInf): #RD PARTY MEDIA CUSNO 90782 4210773\n'
-                                   'End To End Id (Refs/EndToEndId): 115\n'
-                                   'Instructed Id (Refs/InstrId): INNDNL2U20140105000217200000708\n'
-                                   'Postal Address (PstlAdr): SOMESTREET 570-A  1276 ML HOUSCITY  NL',      
+                     'narration': 'Partner Name (RltdPties/Nm): 3rd party Media\n'
+                                  'Partner Account Number (RltdPties/Acct): 3rd party Media\n'
+                                  'Transaction Date (BookgDt): 2014-01-05\n'
+                                  'Reference: 115\n'
+                                  'Communication: \n'
+                                  'Transaction Type (BkTxCd): PMNT-RCDT-ESCT\n'
+                                  'Additional Transaction Information (AddtlTxInf): #RD PARTY MEDIA CUSNO 90782 4210773\n'
+                                  'End To End Id (Refs/EndToEndId): 115\n'
+                                  'Instructed Id (Refs/InstrId): INNDNL2U20140105000217200000708\n'
+                                  'Postal Address (PstlAdr): SOMESTREET 570-A | 1276 ML HOUSCITY | NL',      
                      'partner_name': '3rd party Media',
                      'payment_ref': '#RD PARTY MEDIA CUSNO 90782 4210773',
-                     'ref': '115'},
+                     'ref': '115',
                      'transaction_type': 'PMNT-RCDT-ESCT'}]}])
-

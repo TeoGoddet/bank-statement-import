@@ -37,8 +37,8 @@
                                   'Reversal Indicator (RvslInd): false\n'
                                   'Structured Reference (RmtInf/Strd/CdtrRefInf/Ref): 302388292000022222222222222\n'
                                   'Account Servicer Reference (Refs/AcctSvcrRef): 123456CHCAFEBABE\n'
+                                  'Postal Address (PstlAdr): Place Saint-François  14  1003  Lausanne  CH2',
                      'partner_name': 'Banque Cantonale Vaudoise',
                      'payment_ref': '/',
                      'ref': '302388292000022222222222222'
                      'transaction_type': 'PMNT-RCDT-VCOM'}]}])
-

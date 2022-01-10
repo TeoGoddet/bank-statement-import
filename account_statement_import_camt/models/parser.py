@@ -122,11 +122,15 @@ class CamtParser(models.AbstractModel):
             "%s (Refs/ChqNb)" % _("Cheque Number")
         )
 
+        self.add_value_from_node(
+            ns, node, ["./ns:AddtlTxInf"], transaction, "payment_ref", join_str="\n"
+        )
         # eref
         self.add_value_from_node(
             ns,
             node,
             [
+                "./ns:RmtInf/ns:Strd/ns:CdtrRefInf/ns:Ref",
                 "./ns:Refs/ns:EndToEndId",
                 "./ns:Ntry/ns:AcctSvcrRef",
             ],
@@ -173,7 +177,7 @@ class CamtParser(models.AbstractModel):
                 "./ns:PstlAdr/ns:CtrySubDvsn|"
                 "./ns:PstlAdr/ns:Ctry|"
                 "./ns:PstlAdr/ns:AdrLine",
-                transaction["narration"], "%s (PstlAdr)" % _("Postal Address"), join_str="  "
+                transaction["narration"], "%s (PstlAdr)" % _("Postal Address"), join_str=" | "
             )
         # Get remote_account from iban or from domestic account:
         account_node = node.xpath(
