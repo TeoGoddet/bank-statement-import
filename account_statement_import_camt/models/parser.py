@@ -182,25 +182,29 @@ class CamtParser(models.AbstractModel):
             ns, node, "./ns:BkTxCd/ns:Domn/ns:Cd", transaction["narration"], "BxCd"
         )
         self.add_value_from_node(
-            ns, node, "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:Cd", transaction["narration"], "Bxcdfm"
+            ns, node, "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:Cd", transaction["narration"], "BxCdFmly"
         )                
         self.add_value_from_node(
-            ns, node, "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:SubFmlyCd", transaction["narration"], "BxcdfmSubFmlyCd"
+            ns, node, "./ns:BkTxCd/ns:Domn/ns:Fmly/ns:SubFmlyCd", transaction["narration"], "BxCdFmlySubFmlyCd"
         )
         self.add_value_from_node(
             ns, node, ["./ns:AddtlNtryInf"], transaction["narration"], "AddtlNtryInf",
         )
 
+        transaction["transaction_type"] = "%s-%s-%s" % (transaction["narration"]["BxCd"], 
+                                                       transaction["narration"]["BxCdFmly"],
+                                                       transaction["narration"]["BxCdFmlySubFmlyCd"])
+
         details_nodes = node.xpath("./ns:NtryDtls/ns:TxDtls", namespaces={"ns": ns})
         if len(details_nodes) == 0:
-            transaction["narration"] = '\n'.join(["%s: %s" % (key, val) for key, val in transaction["narration"]])
+            transaction["narration"] = '\n'.join(["%s: %s" % (key, val) for key, val in transaction["narration"].items()])
             yield transaction
             return
         transaction_base = transaction
         for node in details_nodes:
             transaction = transaction_base.copy()
             self.parse_transaction_details(ns, node, transaction)
-            transaction["narration"] = '\n'.join(["%s: %s" % (key, val) for key, val in transaction["narration"]])
+            transaction["narration"] = '\n'.join(["%s: %s" % (key, val) for key, val in transaction["narration"].items()])
             yield transaction
 
     def get_balance_amounts(self, ns, node):
